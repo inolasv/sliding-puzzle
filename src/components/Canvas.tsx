@@ -79,7 +79,7 @@ const Canvas = React.memo<CanvasProps>(function Canvas({ height, width }) {
             onKeyDown={onKeyClick}
             height={height}
             width={width}
-            className={`h-[${height.toString()}px] w-[${width.toString()}px] border-8 border-solid border-[#C89F9C]`}
+            className={`animate-fade h-[${height.toString()}px] w-[${width.toString()}px] border-8 border-solid border-[#C89F9C]`}
         />
     )
 })
