@@ -13,7 +13,7 @@ export interface CanvasProps {
     width: number
 }
 
-const Canvas = React.memo<CanvasProps>(function Canvas({ height, width }) {
+export const Canvas = React.memo<CanvasProps>(function Canvas({ height, width }) {
     const { blocks, selectedBlockIdx, updateSelectedBlock, moveBlock } =
         useGameState()
 
@@ -132,12 +132,10 @@ const Canvas = React.memo<CanvasProps>(function Canvas({ height, width }) {
     return (
         <canvas
             ref={canvasRef}
-            // onClick={onCanvasClick}
+            onClick={onCanvasClick}
             height={height}
             width={width}
             className={`animate-fade h-[${height.toString()}px] w-[${width.toString()}px] border-8 border-solid border-[#C89F9C]`}
         />
     )
 })
-
-export default Canvas

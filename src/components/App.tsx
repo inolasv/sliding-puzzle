@@ -1,4 +1,4 @@
-import Canvas from './Canvas'
+import { Canvas } from './Canvas'
 
 const App = () => {
   return (<div className="m-0 flex h-screen w-screen flex-col items-center justify-center bg-[#F1E7E4]">
