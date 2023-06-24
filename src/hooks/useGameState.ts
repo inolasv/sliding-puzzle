@@ -163,5 +163,6 @@ Add instructions
 Restart game button
 Ability to play back moves
 Ability to show winning moves
+Deploy app
 
 */
