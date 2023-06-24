@@ -71,39 +71,52 @@ export function useGameState() {
     const moveBlock = React.useCallback((direction: Direction) => {
         if (selectedBlockIdx != null) {
             const blockCopy = [...blocks];
+            const selectedBlock = blockCopy[selectedBlockIdx];
 
             switch (direction) {
                 case Direction.UP:
-                    if (areBlocksInSpace(blockCopy, blockCopy[selectedBlockIdx].left, blockCopy[selectedBlockIdx].bottom-1)) {
+                    if (areBlocksInSpace(blockCopy, selectedBlock.left, selectedBlock.bottom-1)) {
+                        return;
+                    } else if (selectedBlock.type === BlockType.BIG || selectedBlock.type === BlockType.DOUBLE_HORIZONTAL
+                        && areBlocksInSpace(blockCopy, selectedBlock.left + 1, selectedBlock.bottom-1)) {
                         return;
                     }
 
-                    blockCopy[selectedBlockIdx].top -= 1;
-                    blockCopy[selectedBlockIdx].bottom -= 1;
+                    selectedBlock.top -= 1;
+                    selectedBlock.bottom -= 1;
                     break;
                 case Direction.DOWN:
-                    if (areBlocksInSpace(blockCopy, blockCopy[selectedBlockIdx].left, blockCopy[selectedBlockIdx].top)) {
+                    if (areBlocksInSpace(blockCopy, selectedBlock.left, selectedBlock.top)) {
+                        return;
+                    } else if (selectedBlock.type === BlockType.BIG || selectedBlock.type === BlockType.DOUBLE_HORIZONTAL
+                        && areBlocksInSpace(blockCopy, selectedBlock.left + 1, selectedBlock.top)) {
                         return;
                     }
 
-                    blockCopy[selectedBlockIdx].top += 1;
-                    blockCopy[selectedBlockIdx].bottom += 1;
+                    selectedBlock.top += 1;
+                    selectedBlock.bottom += 1;
                     break;
                 case Direction.LEFT:
-                    if (areBlocksInSpace(blockCopy, blockCopy[selectedBlockIdx].left-1, blockCopy[selectedBlockIdx].bottom)) {
+                    if (areBlocksInSpace(blockCopy, selectedBlock.left-1, selectedBlock.bottom)) {
+                        return;
+                    } else if (selectedBlock.type === BlockType.BIG || selectedBlock.type === BlockType.DOUBLE_VERTICAL
+                        && areBlocksInSpace(blockCopy, selectedBlock.left-1, selectedBlock.bottom + 1)) {
                         return;
                     }
 
-                    blockCopy[selectedBlockIdx].left -= 1;
-                    blockCopy[selectedBlockIdx].right -= 1;
+                    selectedBlock.left -= 1;
+                    selectedBlock.right -= 1;
                     break;
                 case Direction.RIGHT:
-                    if (areBlocksInSpace(blockCopy, blockCopy[selectedBlockIdx].right, blockCopy[selectedBlockIdx].bottom)) {
+                    if (areBlocksInSpace(blockCopy, selectedBlock.right, selectedBlock.bottom)) {
+                        return;
+                    } else if (selectedBlock.type === BlockType.BIG || selectedBlock.type === BlockType.DOUBLE_VERTICAL
+                        && areBlocksInSpace(blockCopy, selectedBlock.right, selectedBlock.bottom + 1)) {
                         return;
                     }
 
-                    blockCopy[selectedBlockIdx].left += 1;
-                    blockCopy[selectedBlockIdx].right += 1;
+                    selectedBlock.left += 1;
+                    selectedBlock.right += 1;
                     break;
                 default:
                     throw new Error('Did you add a new direction?')
