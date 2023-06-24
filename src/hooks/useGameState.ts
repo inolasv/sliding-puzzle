@@ -154,10 +154,10 @@ function isBlockInSpace(blocks: ReadonlyArray<Block>, blockIdx: number, row: num
 
 TODO:
 
-5. Swipe
-6. Improve UI
-7. Add rules
 
+6. Improve UI
+
+Add sound effects
 Add timer?
 Add instructions
 Restart game button
