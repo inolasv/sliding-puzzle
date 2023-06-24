@@ -1,10 +1,9 @@
-import { BlockList } from "net";
 import { Block, BlockType } from "./types";
 
 const MARGIN_PX = 3;
 
 export function drawBackground(ctx: CanvasRenderingContext2D, height: number, width: number) {
-    ctx.fillStyle = "#EED7C5";
+    ctx.fillStyle = "#F1E7E4";
     ctx.fillRect(0, 0, width, height);
 }
 

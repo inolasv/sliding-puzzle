@@ -1,40 +1,141 @@
-import React from "react";
+import React from 'react'
 
-import { Block, BlockType } from '@/utils/types';
+import { Block, BlockType } from '@/utils/types'
+import { Direction } from '../utils/types'
 
 export function useGameState() {
-    const [blocks, setBlocks] = React.useState<Array<Block>>([{type: BlockType.DOUBLE_VERTICAL, left: 0, right: 1, bottom: 0, top: 2}, 
-        {type: BlockType.DOUBLE_VERTICAL, left: 3, right: 4, bottom: 0, top: 2}, 
-        {type: BlockType.DOUBLE_VERTICAL, left: 0, right: 1, bottom: 3, top: 5}, 
-        {type: BlockType.DOUBLE_VERTICAL, left: 3, right: 4, bottom: 3, top: 5}, 
-        {type: BlockType.DOUBLE_HORIZONTAL, left: 1, right: 3, bottom: 2, top: 3}, 
-        {type: BlockType.SINGLE, left: 1, right: 2, bottom: 3, top: 4}, 
-        {type: BlockType.SINGLE, left: 2, right: 3, bottom: 3, top: 4},
-        {type: BlockType.SINGLE, left: 1, right: 2, bottom: 4, top: 5},
-        {type: BlockType.SINGLE, left: 2, right: 3, bottom: 4, top: 5},
-        {type: BlockType.BIG, left: 1, right: 3, bottom: 0, top: 2}])
-    
-    const [selectedBlockIdx, setSelectedBlockIdx] = React.useState<number | null>(0);
+    const [blocks, setBlocks] = React.useState<Array<Block>>([
+        {
+            type: BlockType.DOUBLE_VERTICAL,
+            left: 0,
+            right: 1,
+            bottom: 0,
+            top: 2,
+        },
+        {
+            type: BlockType.DOUBLE_VERTICAL,
+            left: 3,
+            right: 4,
+            bottom: 0,
+            top: 2,
+        },
+        {
+            type: BlockType.DOUBLE_VERTICAL,
+            left: 0,
+            right: 1,
+            bottom: 3,
+            top: 5,
+        },
+        {
+            type: BlockType.DOUBLE_VERTICAL,
+            left: 3,
+            right: 4,
+            bottom: 3,
+            top: 5,
+        },
+        {
+            type: BlockType.DOUBLE_HORIZONTAL,
+            left: 1,
+            right: 3,
+            bottom: 2,
+            top: 3,
+        },
+        { type: BlockType.SINGLE, left: 1, right: 2, bottom: 3, top: 4 },
+        { type: BlockType.SINGLE, left: 2, right: 3, bottom: 3, top: 4 },
+        { type: BlockType.SINGLE, left: 1, right: 2, bottom: 4, top: 5 },
+        { type: BlockType.SINGLE, left: 2, right: 3, bottom: 4, top: 5 },
+        { type: BlockType.BIG, left: 1, right: 3, bottom: 0, top: 2 },
+    ])
 
-    const updateSelectedBlock = React.useCallback((row: number, column: number) => {
-        for (let blockIdx = 0; blockIdx < blocks.length; blockIdx++) {
-            if (blocks[blockIdx].left <= row && row < blocks[blockIdx].right && blocks[blockIdx].bottom <= column && column < blocks[blockIdx].top) {
-                setSelectedBlockIdx(blockIdx);
-                break;
+    const [selectedBlockIdx, setSelectedBlockIdx] = React.useState<
+        number | null
+    >(0);
+
+    const updateSelectedBlock = React.useCallback(
+        (row: number, column: number) => {
+            for (let blockIdx = 0; blockIdx < blocks.length; blockIdx++) {
+                if (
+                    blocks[blockIdx].left <= row &&
+                    row < blocks[blockIdx].right &&
+                    blocks[blockIdx].bottom <= column &&
+                    column < blocks[blockIdx].top
+                ) {
+                    setSelectedBlockIdx(blockIdx)
+                    break
+                }
             }
+        },
+        [blocks]
+    )
+
+    const moveBlock = React.useCallback((direction: Direction) => {
+        if (selectedBlockIdx != null) {
+            const blockCopy = [...blocks];
+
+            switch (direction) {
+                case Direction.UP:
+                    if (areBlocksInSpace(blockCopy, blockCopy[selectedBlockIdx].left, blockCopy[selectedBlockIdx].bottom-1)) {
+                        return;
+                    }
+
+                    blockCopy[selectedBlockIdx].top -= 1;
+                    blockCopy[selectedBlockIdx].bottom -= 1;
+                    break;
+                case Direction.DOWN:
+                    if (areBlocksInSpace(blockCopy, blockCopy[selectedBlockIdx].left, blockCopy[selectedBlockIdx].top)) {
+                        return;
+                    }
+
+                    blockCopy[selectedBlockIdx].top += 1;
+                    blockCopy[selectedBlockIdx].bottom += 1;
+                    break;
+                case Direction.LEFT:
+                    if (areBlocksInSpace(blockCopy, blockCopy[selectedBlockIdx].left-1, blockCopy[selectedBlockIdx].bottom)) {
+                        return;
+                    }
+
+                    blockCopy[selectedBlockIdx].left -= 1;
+                    blockCopy[selectedBlockIdx].right -= 1;
+                    break;
+                case Direction.RIGHT:
+                    if (areBlocksInSpace(blockCopy, blockCopy[selectedBlockIdx].right, blockCopy[selectedBlockIdx].bottom)) {
+                        return;
+                    }
+
+                    blockCopy[selectedBlockIdx].left += 1;
+                    blockCopy[selectedBlockIdx].right += 1;
+                    break;
+                default:
+                    throw new Error('Did you add a new direction?')
+            }
+            setBlocks(blockCopy);
         }
-    }, [blocks])
-    
-    return {selectedBlockIdx, blocks, updateSelectedBlock}
+    }, [blocks, selectedBlockIdx])
+
+    return { selectedBlockIdx, blocks, updateSelectedBlock, moveBlock }
+}
+
+
+function areBlocksInSpace(blocks: ReadonlyArray<Block>, row: number, column: number) {
+    for (let blockIdx = 0; blockIdx < blocks.length; blockIdx++) {
+        if (isBlockInSpace(blocks, blockIdx, row, column)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+function isBlockInSpace(blocks: ReadonlyArray<Block>, blockIdx: number, row: number, column: number) {
+    return blocks[blockIdx].left <= row &&
+    row < blocks[blockIdx].right &&
+    blocks[blockIdx].bottom <= column &&
+    column < blocks[blockIdx].top || !(0 <= row && row < 4 && 0 <= column && column < 5);
 }
 
 /*
 
 TODO:
 
-2. Apply move to block
-3. Check if valid move
-4. Animate move block
 5. Check if won game
 6. Improve UI
 7. Add rules
