@@ -131,11 +131,11 @@ export const Canvas = React.memo<CanvasProps>(function Canvas({ height, width })
 
     return (
         <canvas
-            ref={canvasRef}
-            onClick={onCanvasClick}
-            height={height}
-            width={width}
             className={`animate-fade h-[${height.toString()}px] w-[${width.toString()}px] border-8 border-solid border-[#C89F9C]`}
+            height={height}
+            onClick={onCanvasClick}
+            ref={canvasRef}
+            width={width}
         />
     )
 })
