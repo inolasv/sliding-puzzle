@@ -25,3 +25,8 @@ export const Direction = {
 } as const;
 
 export type Direction = ValuesUnion<typeof Direction>;
+
+export interface Touch {
+    x: number;
+    y: number;
+}

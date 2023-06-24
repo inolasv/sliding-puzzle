@@ -3,6 +3,8 @@ import React from 'react'
 import { Block, BlockType } from '@/utils/types'
 import { Direction } from '../utils/types'
 
+const BIG_BLOCK_IDX = 9;
+
 export function useGameState() {
     const [blocks, setBlocks] = React.useState<Array<Block>>([
         {
@@ -88,7 +90,7 @@ export function useGameState() {
                 case Direction.DOWN:
                     if (areBlocksInSpace(blockCopy, selectedBlock.left, selectedBlock.top)) {
                         return;
-                    } else if (selectedBlock.type === BlockType.BIG || selectedBlock.type === BlockType.DOUBLE_HORIZONTAL
+                    } else if ((selectedBlock.type === BlockType.BIG || selectedBlock.type === BlockType.DOUBLE_HORIZONTAL)
                         && areBlocksInSpace(blockCopy, selectedBlock.left + 1, selectedBlock.top)) {
                         return;
                     }
@@ -99,7 +101,7 @@ export function useGameState() {
                 case Direction.LEFT:
                     if (areBlocksInSpace(blockCopy, selectedBlock.left-1, selectedBlock.bottom)) {
                         return;
-                    } else if (selectedBlock.type === BlockType.BIG || selectedBlock.type === BlockType.DOUBLE_VERTICAL
+                    } else if ((selectedBlock.type === BlockType.BIG || selectedBlock.type === BlockType.DOUBLE_VERTICAL)
                         && areBlocksInSpace(blockCopy, selectedBlock.left-1, selectedBlock.bottom + 1)) {
                         return;
                     }
@@ -123,11 +125,14 @@ export function useGameState() {
             }
             setBlocks(blockCopy);
         }
-    }, [blocks, selectedBlockIdx])
 
+        if (blocks[BIG_BLOCK_IDX]?.top === 5 && blocks[BIG_BLOCK_IDX]?.left === 1) {
+            alert("Congrats, you won!");
+        }
+
+    }, [blocks, selectedBlockIdx]);
     return { selectedBlockIdx, blocks, updateSelectedBlock, moveBlock }
 }
-
 
 function areBlocksInSpace(blocks: ReadonlyArray<Block>, row: number, column: number) {
     for (let blockIdx = 0; blockIdx < blocks.length; blockIdx++) {
@@ -149,8 +154,14 @@ function isBlockInSpace(blocks: ReadonlyArray<Block>, blockIdx: number, row: num
 
 TODO:
 
-5. Check if won game
+5. Swipe
 6. Improve UI
 7. Add rules
+
+Add timer?
+Add instructions
+Restart game button
+Ability to play back moves
+Ability to show winning moves
 
 */
