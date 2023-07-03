@@ -5,16 +5,28 @@ export const BlockType = {
     DOUBLE_HORIZONTAL: "double horizontal",
     DOUBLE_VERTICAL: "double vertical1",
     SINGLE: "single"
-}
+} as const;
 
 export type BlockType = ValuesUnion<typeof BlockType>;
 
 export interface Block {
     readonly type: BlockType,
-    readonly x: number,
-    readonly y: number
+    left: number;
+    right: number;
+    top: number;
+    bottom: number;
 }
 
+export const Direction = {
+    UP: "up",
+    DOWN: "down",
+    LEFT: "left",
+    RIGHT: "right"
+} as const;
 
+export type Direction = ValuesUnion<typeof Direction>;
 
-
+export interface Touch {
+    x: number;
+    y: number;
+}
