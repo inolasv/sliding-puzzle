@@ -8,8 +8,6 @@ import { Direction } from '../utils/types'
 
 const BIG_BLOCK_IDX = 9;
 
-
-
 export function useGameState() {
     const [blocks, setBlocks] = React.useState<Array<Block>>([
         {
@@ -79,8 +77,6 @@ export function useGameState() {
         },
         [blocks]
     )
-
-    
 
     const moveBlock = React.useCallback((direction: Direction) => {
         if (selectedBlockIdx != null) {
