@@ -1,6 +1,5 @@
 import React from "react";
 
-
 export const useMousePosition = () => {
 
     const [localMousePos, setLocalMousePos] = React.useState({});

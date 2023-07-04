@@ -30,3 +30,9 @@ export interface Touch {
     x: number;
     y: number;
 }
+
+export interface Mouse {
+    x: number;
+    y: number;
+}
+

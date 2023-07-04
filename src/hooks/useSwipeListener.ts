@@ -14,7 +14,7 @@ export function useSwipeListener(touchDownListener: (event: TouchEvent) => void,
 
       // Remove event listener on cleanup
       return () => {
-        element.addEventListener("touchstart", touchDownListener);
+        element.removeEventListener("touchstart", touchDownListener);
         element.removeEventListener("touchend", touchUpListener);
       };
     },

@@ -1,10 +1,14 @@
 import React from 'react'
+import useSound from 'use-sound'
 
 import { Block, BlockType } from '@/utils/types'
 
+import blockSound from '../sounds/mixkit-wood-hard-hit-2182.wav';
 import { Direction } from '../utils/types'
 
 const BIG_BLOCK_IDX = 9;
+
+
 
 export function useGameState() {
     const [blocks, setBlocks] = React.useState<Array<Block>>([
@@ -54,6 +58,11 @@ export function useGameState() {
         number | null
     >(0);
 
+    const [playSound] = useSound(
+        blockSound,
+        { volume: 0.25 }
+    );
+
     const updateSelectedBlock = React.useCallback(
         (row: number, column: number) => {
             for (let blockIdx = 0; blockIdx < blocks.length; blockIdx++) {
@@ -71,8 +80,13 @@ export function useGameState() {
         [blocks]
     )
 
+    
+
     const moveBlock = React.useCallback((direction: Direction) => {
         if (selectedBlockIdx != null) {
+            
+            playSound();
+
             const blockCopy = [...blocks];
             const selectedBlock = blockCopy[selectedBlockIdx];
 

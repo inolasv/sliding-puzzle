@@ -3,10 +3,11 @@ import React from 'react'
 import { useCanvas } from '@/hooks/useCanvas'
 import { useGameState } from '@/hooks/useGameState'
 import { useKeyDownListener } from '@/hooks/useKeyDownListener'
+import { useMouseMove } from '@/hooks/useMouseMove'
 import { useSwipeListener } from '@/hooks/useSwipeListener'
-import { drawBackground, drawBlocks } from '@/utils/canvas'
+import { drawBackground, drawBlocks, drawGoalSquare } from '@/utils/canvas'
 
-import { Direction, Touch } from '../utils/types'
+import { Direction, Mouse, Touch } from '../utils/types'
 
 export interface CanvasProps {
     height: number
@@ -18,16 +19,19 @@ export const Canvas = React.memo<CanvasProps>(function Canvas({ height, width })
         useGameState()
 
     const [touchStart, setTouchStart] = React.useState<Touch>({ x: 0, y: 0 })
+    const [mouseStart, setMouseStart] = React.useState<Mouse>({ x: 0, y: 0 })
 
     const draw = React.useCallback(
         (ctx: CanvasRenderingContext2D) => {
             drawBackground(ctx, height, width)
+            drawGoalSquare(ctx, height, width)
             drawBlocks(ctx, blocks, selectedBlockIdx, height / 5)
         },
         [blocks, height, selectedBlockIdx, width]
     )
 
     const canvasRef = useCanvas({ draw })
+
 
     const onCanvasClick = React.useCallback(
         (event: React.MouseEvent<HTMLElement>) => {
@@ -48,15 +52,19 @@ export const Canvas = React.memo<CanvasProps>(function Canvas({ height, width })
     const onKeyDown = React.useCallback(
         (event: KeyboardEvent) => {
             switch (event.key) {
+                case 'ArrowUp':
                 case 'w':
                     moveBlock(Direction.UP)
                     break
+                case 'ArrowLeft':
                 case 'a':
                     moveBlock(Direction.LEFT)
                     break
+                case 'ArrowDown':
                 case 's':
                     moveBlock(Direction.DOWN)
                     break
+                case 'ArrowRight':
                 case 'd':
                     moveBlock(Direction.RIGHT)
                     break
@@ -125,13 +133,73 @@ export const Canvas = React.memo<CanvasProps>(function Canvas({ height, width })
         [canvasRef, moveBlock, touchStart.x, touchStart.y]
     )
 
+    const onMouseDown = React.useCallback(
+        (event: MouseEvent) => {
+            const rect = canvasRef?.current?.getBoundingClientRect()
+
+            if (rect != null) {
+                // const touchObj = event.changedTouches[0]
+
+                const contentX = event.clientX - rect.left
+                const contentY = event.clientY - rect.top
+                updateSelectedBlock(
+                    Math.floor((contentX / width) * 4),
+                    Math.floor((contentY / height) * 5)
+                )
+                setMouseStart({ x: contentX, y: contentY })
+            }
+        },
+        [canvasRef, height, updateSelectedBlock, width]
+    )
+
+    const onMouseUp = React.useCallback(
+        (event: MouseEvent) => {
+            const rect = canvasRef?.current?.getBoundingClientRect()
+
+            if (rect != null) {
+                // const touchObj = event.changedTouches[0]
+
+                const contentX = event.clientX - rect.left
+                const contentY = event.clientY - rect.top
+
+                const xDifference = contentX - mouseStart.x;
+                const yDifference = contentY - mouseStart.y;
+
+                if (xDifference === 0 && yDifference === 0) {
+                    return;
+                }
+
+                if (yDifference < 0) {
+                    if (contentX < mouseStart.x + yDifference) {
+                        moveBlock(Direction.LEFT)
+                    } else if (contentX > mouseStart.x - yDifference) {
+                        moveBlock(Direction.RIGHT)
+                    } else {
+                        moveBlock(Direction.UP)
+                    }
+                } else {
+                    if (contentX < mouseStart.x - yDifference) {
+                        moveBlock(Direction.LEFT)
+                    } else if (contentX > mouseStart.x + yDifference) {
+                        moveBlock(Direction.RIGHT)
+                    } else {
+                        moveBlock(Direction.DOWN)
+                    }
+                }
+            }
+        },
+        [canvasRef, moveBlock, mouseStart.x, mouseStart.y]
+    )
+
     useKeyDownListener(onKeyDown)
 
     useSwipeListener(onTouchDown, onTouchUp)
 
+    useMouseMove(onMouseDown, onMouseUp)
+
     return (
         <canvas
-            className={`animate-fade h-[${height.toString()}px] w-[${width.toString()}px] border-8 border-solid border-[#C89F9C]`}
+            className={`h-[ animate-fade${height.toString()}px] w-[${width.toString()}px] border-8 border-solid border-[#C89F9C]`}
             height={height}
             onClick={onCanvasClick}
             ref={canvasRef}
