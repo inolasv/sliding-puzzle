@@ -3,6 +3,9 @@
 module.exports = {
   content: ['./src/**/*.{js,ts,jsx,tsx}'],
   theme: {
+    fontFamily: {
+      display: ["Nova Oval", "cursive"],
+    },
     extend: {
 
       // that is animation class

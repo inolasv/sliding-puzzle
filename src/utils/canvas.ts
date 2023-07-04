@@ -7,6 +7,12 @@ export function drawBackground(ctx: CanvasRenderingContext2D, height: number, wi
     ctx.fillRect(0, 0, width, height);
 }
 
+export function drawGoalSquare(ctx: CanvasRenderingContext2D, height: number, width: number) {
+    ctx.fillStyle = "#c8e1cc";
+    ctx.fillRect(width/4, 3 * height/5, width/2, 3 * height / 5);
+
+}
+
 export function drawBlocks(ctx: CanvasRenderingContext2D, blocks: Array<Block>, selectedBlockIdx: number | null, squareSize: number) {    
     let blockIdx = 0;
 

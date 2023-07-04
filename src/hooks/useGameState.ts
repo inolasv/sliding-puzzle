@@ -1,9 +1,14 @@
 import React from 'react'
+import useSound from 'use-sound'
 
 import { Block, BlockType } from '@/utils/types'
+
+import blockSound from '../sounds/mixkit-wood-hard-hit-2182.wav';
 import { Direction } from '../utils/types'
 
 const BIG_BLOCK_IDX = 9;
+
+
 
 export function useGameState() {
     const [blocks, setBlocks] = React.useState<Array<Block>>([
@@ -53,6 +58,11 @@ export function useGameState() {
         number | null
     >(0);
 
+    const [playSound] = useSound(
+        blockSound,
+        { volume: 0.25 }
+    );
+
     const updateSelectedBlock = React.useCallback(
         (row: number, column: number) => {
             for (let blockIdx = 0; blockIdx < blocks.length; blockIdx++) {
@@ -70,8 +80,13 @@ export function useGameState() {
         [blocks]
     )
 
+    
+
     const moveBlock = React.useCallback((direction: Direction) => {
         if (selectedBlockIdx != null) {
+            
+            playSound();
+
             const blockCopy = [...blocks];
             const selectedBlock = blockCopy[selectedBlockIdx];
 
@@ -79,7 +94,7 @@ export function useGameState() {
                 case Direction.UP:
                     if (areBlocksInSpace(blockCopy, selectedBlock.left, selectedBlock.bottom-1)) {
                         return;
-                    } else if (selectedBlock.type === BlockType.BIG || selectedBlock.type === BlockType.DOUBLE_HORIZONTAL
+                    } else if ((selectedBlock.type === BlockType.BIG || selectedBlock.type === BlockType.DOUBLE_HORIZONTAL)
                         && areBlocksInSpace(blockCopy, selectedBlock.left + 1, selectedBlock.bottom-1)) {
                         return;
                     }
@@ -112,7 +127,7 @@ export function useGameState() {
                 case Direction.RIGHT:
                     if (areBlocksInSpace(blockCopy, selectedBlock.right, selectedBlock.bottom)) {
                         return;
-                    } else if (selectedBlock.type === BlockType.BIG || selectedBlock.type === BlockType.DOUBLE_VERTICAL
+                    } else if ((selectedBlock.type === BlockType.BIG || selectedBlock.type === BlockType.DOUBLE_VERTICAL)
                         && areBlocksInSpace(blockCopy, selectedBlock.right, selectedBlock.bottom + 1)) {
                         return;
                     }
