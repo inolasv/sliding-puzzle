@@ -1,6 +1,5 @@
 import React from "react";
 
-
 export const useMouseMove = (mouseDownListener: (event: MouseEvent) => void, mouseUpListener: (event: MouseEvent) => void) => {
     React.useEffect(() => {
         window.addEventListener('mouseup', mouseUpListener);
