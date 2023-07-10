@@ -6,8 +6,9 @@ export const useMousePosition = () => {
 
     const handleMouseClick = (event: MouseEvent) => {
         // Get mouse position relative to element
-        const localX = event.clientX - event?.target?.offsetLeft;
-        const localY = event.clientY - event?.target?.offsetTop;
+        const { target } = event;
+        const localX = event.clientX - (target as HTMLElement).offsetLeft;
+        const localY = event.clientY - (target as HTMLElement).offsetTop;
 
         setLocalMousePos({ x: localX, y: localY });
     };
